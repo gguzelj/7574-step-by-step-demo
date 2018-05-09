@@ -47,7 +47,7 @@ Se termina traduciendo en esta dependencia dentro del pom.xml:
         <scope>runtime</scope>
     </dependency>
 ```
-Quien cuente con un mysql ya instalado, puede cambiar esta dependencia de H2 por la de Mysql (Mysql jdbc driver), para poder manejar la conexión entre nuestra aplicación y la base de datos.
+Quien cuente con un mysql ya instalado, puede cambiar esta dependencia de H2 por la de Mysql (Mysql jdbc driver), para poder manejar la conexión entre nuestra aplicación y la base de datos. Esto nos va a permitir ver luego de que manera hibernate hace el mapeo al esquema de la bas de datos.
 
 El archivo que nos genera esta página es un demo.zip que contiene toda la estructura básica inicial del proyecto. Podemos correr los siguientes comandos para verificar que todo este bien:
 
@@ -60,3 +60,45 @@ mvn compile
 El resultado debería ser algo similar a esto:
 
 <img src="./images/mvn-compile.png" alt="maven compile">
+
+### Hello world controller
+
+Nuestro siguiente paso es armar un controller básico que nos permita testear los controllers que genera spring. Para esto primero importamos el proyecto (en el caso del intelliJ debería ser tan fácil como File > Open...).
+El proyecto contiene estos archivos:
+
+<img src="./images/intellij-open.png">
+
+Creamos una nueva clase que será nuestro controller. Luego, solamente es necesario anotarla con la annotation @RestController para que spring la detecte como un controller de nuestra aplicación.
+Si ademas queremos mapear esta clase a otra ruta, como por ejemplo '/api', deberíamos agregar la annotation @RequestMapping: 
+
+```java 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api")
+public class HelloWorldController {
+
+}
+```
+
+Ahora definimos un método que se encargué de manejar las request http con verbo GET, y devuelva un string con la palabra "hola mundo". Para esto solamente es necesario anotar al metodo con @GetMapping:
+```java 
+    @GetMapping
+    public String helloWorldEndpoint() {
+        return "hello world";
+    }
+ ```
+ 
+Creamos una configuración para poder levantar nuestra api desde la opción de 'Edit Configuration':
+
+<img src="./images/edit-configuration.png">
+
+Ahora levantamos la aplicación y probamos nuestro endpoint:
+ 
+ <img src="./images/app-running.png">
+ 
+ <img src="./images/postman-hello-world.png">
+ 
+ 
+ 
