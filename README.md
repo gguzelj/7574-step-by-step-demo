@@ -14,7 +14,7 @@ También es recomendable contar con algún [ide](https://www.jetbrains.com/idea/
 
 Primero vamos a armar la estructura general del proyecto. En este caso, vamos a usar la herramienta [spring initializr](https://start.spring.io/) que nos permite seleccionar las dependencias que necesitamos para armar una pequeña api rest que se conecta con una base de datos. 
 
-<img src="./images/spring-initilizr.png" alt="spring initilizr" width="500">
+<img src="./images/spring-initilizr.png" alt="spring initilizr" width="500" height="300">
 
 
 
