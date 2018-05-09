@@ -68,8 +68,8 @@ El proyecto contiene estos archivos:
 
 <img src="./images/intellij-open.png">
 
-Creamos una nueva clase que será nuestro controller. Luego, solamente es necesario anotarla con la annotation @RestController para que spring la detecte como un controller de nuestra aplicación.
-Si ademas queremos mapear esta clase a otra ruta, como por ejemplo '/api', deberíamos agregar la annotation @RequestMapping: 
+Creamos una nueva clase que será nuestro controller. Luego, solamente es necesario anotarla con la annotation `@RestController` para que spring la detecte como un controller de nuestra aplicación.
+Si ademas queremos mapear esta clase a otra ruta, como por ejemplo '/api', deberíamos agregar la annotation `@RequestMapping`: 
 
 ```java 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,12 +82,12 @@ public class HelloWorldController {
 }
 ```
 
-Ahora definimos un método que se encargué de manejar las request http con verbo GET, y devuelva un string con la palabra "hola mundo". Para esto solamente es necesario anotar al metodo con @GetMapping:
+Ahora definimos un método que se encargué de manejar las request http con verbo GET, y devuelva un string con la palabra "hola mundo". Para esto solamente es necesario anotar al metodo con `@GetMapping`:
 ```java 
-    @GetMapping
-    public String helloWorldEndpoint() {
-        return "hello world";
-    }
+@GetMapping
+public String helloWorldEndpoint() {
+    return "hello world";
+}
  ```
  
 Creamos una configuración para poder levantar nuestra api desde la opción de 'Edit Configuration':
@@ -101,4 +101,59 @@ Ahora levantamos la aplicación y probamos nuestro endpoint:
  <img src="./images/postman-hello-world.png">
  
  
+### Jpa & Hibernate
+
+El siguiente paso es armar algún modelo en nuestro dominio y mapearlo a nuestra base de datos. Para este ejemplo vamos a crear la clase Customer, y agregarle algunas propiedades:
+```java 
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+    private String firstName;
+    private String lastName;
+
+    protected Customer() {}
+
+    public Customer(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Customer[id=%d, firstName='%s', lastName='%s']",
+                id, firstName, lastName);
+    }
+
+}
+ ```
  
+ En este fragmento de código tenemos las siguientes annotations:
+ - **@Entity:** Con esto le estamos indicando a hibernate que esta clase debe mapearse con alguna tabla de nuestro esquema.
+ - **@Id:** Le indicamos que el atributo será quien contenga el id que lo identifica.
+ - **@GeneratedValue:** Genera automáticamente un id cuando se está insertando una nueva instancia.
+ 
+ Lo siguiente es definir un repositorio que nos permita realizar operaciones sobre esta entidad. Para esto contamos con los `CrudRepository`. CrudRepository es una interfaz que nos provee spring con las operaciones básicas (crud) para operar sobre nuestro dominio.
+ 
+ Al levantar nuestra aplicación spring detecta que tenemos esta interfaz, e implementa los métodos necesarios para que funcione. Además, podemos crear nuevos métodos que sirvan para hacer queries sobre nuestra base de datos. Por ejemplo, si necesitamos buscar `Customer`'s por la propiedad lastName, podemos definir el método `List<Customer> findByLastName(String lastName)` y spring se encarga de implementarlo:
+ 
+ ```java
+import java.util.List;
+import org.springframework.data.repository.CrudRepository;
+
+public interface CustomerRepository extends CrudRepository<Customer, Long> {
+
+    List<Customer> findByLastName(String lastName);
+
+} 
+  ```
+  
