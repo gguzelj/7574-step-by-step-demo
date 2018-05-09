@@ -61,6 +61,20 @@ El resultado debería ser algo similar a esto:
 
 <img src="./images/mvn-compile.png" alt="maven compile">
 
+### Configuración Mysql
+
+En caso de estar usando Mysql en lugar de la base de datos in memory H2 será necesario definir la configuración de algunos parametros. Esto se hace modificando el archivo application.properties, agregando lo siguiente:
+
+```yaml
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/demo
+spring.datasource.username=dummy
+spring.datasource.password=test
+```
+`spring.jpa.hibernate.ddl-auto` nos permite indicarle a hibernate si queremos que nos genere el esquema de tablas en la base de datos (en caso de create o create-drop), que lo actualice si es necesario (update), que lo valide (validate) entre otros.
+Con `spring.datasource.driver-class-name` definimos el nombre de la clase que utilizaremos como drive para realizar las operaciones contra la base de datos.
+
 ### Hello world controller
 
 Nuestro siguiente paso es armar un controller básico que nos permita testear los controllers que genera spring. Para esto primero importamos el proyecto (en el caso del intelliJ debería ser tan fácil como File > Open...).
