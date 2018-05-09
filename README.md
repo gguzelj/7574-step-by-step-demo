@@ -274,3 +274,18 @@ public List<Customer> getAll(@RequestParam(required = false) String lastName) {
 }
 ```
 `@RequestParam` se encarga de hacer el mapeo entre la request y nuestro parámetro (agregamos el required = false para hacerlo no obligatorio).
+
+### Verificamos Api
+
+**POST**
+
+<img src="./images/post-example.png">
+
+**GET**
+
+<img src="./images/get-example.png">
+
+**GET BY NAME**
+
+<img src="./images/by-name-example.png">
+
