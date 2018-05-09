@@ -127,6 +127,18 @@ public class Customer {
         this.lastName = lastName;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
     @Override
     public String toString() {
         return String.format(
@@ -157,3 +169,94 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 } 
   ```
   
+### Customers Controller
+
+Por último, vamos a crear un controller (`CustomerController`) que trabaje directamente con este repositorio para poder crear, buscar y eliminar customers.
+
+```java
+@RestController
+@RequestMapping("api/customers")
+public class CustomerController {
+
+    private final CustomerRepository repository;
+
+    @Autowired
+    public CustomerController(CustomerRepository repository) {
+        this.repository = repository;
+    }
+}
+```
+
+En este caso podemos ver como spring se encarga de [inyectar](http://www.baeldung.com/inversion-control-and-dependency-injection-in-spring) una instancia de este repositorio con solamente agregar `@Autowired` .
+
+
+#### Crear Customer
+En nuestro controller agregamos el siguiente método:
+
+ ```java
+@PostMapping
+public Customer createCustomer(@RequestBody Customer customer) {
+    return this.repository.save(customer);
+}
+```
+Con el `@PostMapping` indicamos que este método tiene que estar vinculado al verbo POST del protocolo HTTP. Por otro lado, con `@RequestBody` estamos indicando que el body de la request debe mapearse con una instancia del objeto Customer.
+
+
+#### Leer todos los customer
+
+ ```java
+@GetMapping
+public List<Customer> getAll() {
+    return this.repository.findAll();
+}
+```
+
+Este endpoint es muy similar al utilizado en el HelloWorld, con la diferencia que estamos usando el repositorio que habíamos creado. El repositorio original devuelve un `Iterable<Customer>` para el método findAll, pero podemos redefinirlo para que se ajuste a nuestra necesidad:
+ ```java
+public interface CustomerRepository extends CrudRepository<Customer, Long> {
+
+    List<Customer> findByLastName(String lastName);
+    
+    List<Customer> findAll();
+
+}
+```
+Nuevamente, spring se encarga de implementar este método.
+
+#### Leer customer por id
+
+ ```java
+@GetMapping("/{customerId}")
+public Customer findById(@PathVariable Long customerId) {
+    return this.repository.findById(customerId).orElse(null);
+}
+```
+
+Para este caso agregamos una nueva annotation, la `@PathVariable`. Con esto indicamos que debe vincularnos el parámetro customerId con parte del path de la request.
+
+
+#### Borrar customer por id
+
+ ```java
+@DeleteMapping("/{customerId}")
+public void deleteById(@PathVariable Long customerId) {
+    this.repository.deleteById(customerId);
+}
+```
+Este endpoint es muy similar al anterior, y no requiere mayor análisis.
+
+#### Buscar customer por lastName
+
+Por último, vamos a modificar nuestro endpoint que buscar todos los customers, para que acepte un query param que nos permita filtrar por lastName (aprovechando el método definido en nuestro repositorio).
+
+
+```java
+@GetMapping
+public List<Customer> getAll(@RequestParam(required = false) String lastName) {
+    if (Objects.isNull(lastName)) {
+        return this.repository.findAll();
+    }
+    return this.repository.findByLastName(lastName);
+}
+```
+`@RequestParam` se encarga de hacer el mapeo entre la request y nuestro parámetro (agregamos el required = false para hacerlo no obligatorio).
