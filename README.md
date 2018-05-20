@@ -47,7 +47,19 @@ Se termina traduciendo en esta dependencia dentro del pom.xml:
         <scope>runtime</scope>
     </dependency>
 ```
-Quien cuente con un mysql ya instalado, puede cambiar esta dependencia de H2 por la de Mysql (Mysql jdbc driver), para poder manejar la conexión entre nuestra aplicación y la base de datos. Esto nos va a permitir ver luego de que manera hibernate hace el mapeo al esquema de la bas de datos.
+Quien cuente con un mysql ya instalado, puede cambiar esta dependencia de H2 por la de Mysql (Mysql jdbc driver), para poder manejar la conexión entre nuestra aplicación y la base de datos. Esto nos va a permitir ver luego de que manera hibernate genera dicho esquema:
+
+<img src="./images/spring-initilizr-mysql.png" alt="spring initilizr with mysql">
+
+Esto se traduce a la siguiente dependencia:
+
+```xml
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+```
 
 El archivo que nos genera esta página es un demo.zip que contiene toda la estructura básica inicial del proyecto. Podemos correr los siguientes comandos para verificar que todo este bien:
 
